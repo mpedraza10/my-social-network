@@ -11,6 +11,9 @@ import { useForm } from "react-hook-form";
 // Validation imports
 import { SignupValidation } from "@/lib/validation";
 
+// Appwrite api imports
+import { createUserAccount } from "@/lib/appwrite/api";
+
 // Shadcn components
 import {
 	Form,
@@ -22,11 +25,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 // Components
 import Loader from "@/components/shared/Loader";
 
 const SignupForm = () => {
+	const { toast } = useToast();
 	const isLoading = false;
 
 	// 1. Define your form.
@@ -43,8 +48,16 @@ const SignupForm = () => {
 	// 2. Define a submit handler.
 	async function onSubmit(values: z.infer<typeof SignupValidation>) {
 		// Create the user
-    // const newUser = await createUserAccount(values);
-		console.log(values);
+		const newUser = await createUserAccount(values);
+
+		if (!newUser) {
+			return toast({
+				title: "Sign up failed. Please try again.",
+			});
+		}
+
+    // If everything went well we create a session
+    // const session = await signInAccount
 	}
 
 	return (

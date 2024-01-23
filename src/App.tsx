@@ -1,6 +1,9 @@
 // React router imports
 import { Route, Routes } from "react-router-dom";
 
+// Shadcn components
+import { Toaster } from "./components/ui/toaster";
+
 // Components
 import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
@@ -26,6 +29,8 @@ const App = () => {
 					<Route path="/" element={<Home />} />
 				</Route>
 			</Routes>
+
+			<Toaster />
 		</main>
 	);
 };
