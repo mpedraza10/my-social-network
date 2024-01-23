@@ -1,7 +1,12 @@
-const SignupForm = () => {
-  return (
-    <div>SignupForm</div>
-  )
-}
+// Shadcn components
+import { Button } from "@/components/ui/button";
 
-export default SignupForm
+const SignupForm = () => {
+	return (
+		<div>
+			<Button>Click me</Button>
+		</div>
+	);
+};
+
+export default SignupForm;
