@@ -3,16 +3,22 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // React router dom imports
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // React hook form imports
 import { useForm } from "react-hook-form";
 
+// Context
+import { useUserContext } from "@/context/AuthContext";
+
 // Validation imports
 import { SignupValidation } from "@/lib/validation";
 
-// Appwrite api imports
-import { createUserAccount } from "@/lib/appwrite/api";
+// Tanstack hooks imports
+import {
+	useCreateUserAccount,
+	useSignInAccount,
+} from "@/lib/react-query/queriesAndMutations";
 
 // Shadcn components
 import {
@@ -31,8 +37,19 @@ import { useToast } from "@/components/ui/use-toast";
 import Loader from "@/components/shared/Loader";
 
 const SignupForm = () => {
+	// Toast intit
 	const { toast } = useToast();
-	const isLoading = false;
+
+	// Context
+	const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+
+	const { mutateAsync: createUserAccount, isPending: isCreatingAccount } =
+		useCreateUserAccount();
+
+	const { mutateAsync: signInAccount, isPending: isSigningIn } =
+		useSignInAccount();
+
+	const navigate = useNavigate();
 
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof SignupValidation>>({
@@ -56,8 +73,25 @@ const SignupForm = () => {
 			});
 		}
 
-    // If everything went well we create a session
-    // const session = await signInAccount
+		// If everything went well we create a session
+		const session = await signInAccount({
+			email: values.email,
+			password: values.password,
+		});
+
+		if (!session) {
+			return toast({ title: "Sign in failed. Please try again." });
+		}
+
+		// If we have a session we need to store it in our react context ALWAYS
+		const isLoggedIn = await checkAuthUser();
+
+		if (isLoggedIn) {
+			form.reset();
+			navigate("/");
+		} else {
+			return toast({ title: "Sign in failed. Please try again." });
+		}
 	}
 
 	return (
@@ -129,7 +163,7 @@ const SignupForm = () => {
 						)}
 					/>
 					<Button type="submit" className="shad-button_primary">
-						{isLoading ? (
+						{isCreatingAccount ? (
 							<div className="flex-center gap-2">
 								<Loader />
 								Loading...
