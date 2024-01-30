@@ -13,9 +13,11 @@ import { useSignOutAccount } from "@/lib/react-query/queriesAndMutations";
 // Constants import
 import { sidebarLinks } from "@/constants";
 
+// Types imports
+import { INavLink } from "@/types";
+
 // Shadcn components
 import { Button } from "@/components/ui/button";
-import { INavLink } from "@/types";
 
 const LeftSidebar = () => {
 	const { pathname } = useLocation();
