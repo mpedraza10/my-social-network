@@ -22,7 +22,7 @@ import { useToast } from "@/components/ui/use-toast";
 // Components
 import FileUploader from "../shared/FileUploader";
 
-const PostForm = () => {
+const PostForm = ({ post }) => {
 	const formSchema = z.object({
 		username: z.string().min(2, {
 			message: "Username must be at least 2 characters.",
@@ -72,7 +72,10 @@ const PostForm = () => {
 						<FormItem>
 							<FormLabel className="shad-form_label">Add Photos</FormLabel>
 							<FormControl>
-								<FileUploader />
+								<FileUploader
+									fieldChange={field.onChange}
+									mediaUrl={post?.imageUrl}
+								/>
 							</FormControl>
 							<FormMessage className="shad-form_message" />
 						</FormItem>
